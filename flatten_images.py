@@ -10,27 +10,22 @@ EROSION_SIZE = 15
 CLOSE_KERNEL_SIZE = 15
 EXPAND_AMOUNT = 500.0
 ANGLE_THRESHOLD = 8.0
-OUT_W, OUT_H = 1000, 500
+OUT_W, OUT_H = 2000, 1000
 
 def find_images(folder):
-    extensions = (".jpg", ".jpeg", ".png")
     paths = []
     if not os.path.isdir(folder):
         return []
     for filename in os.listdir(folder):
-        if filename.lower().endswith(extensions):
-            paths.append(os.path.join(folder, filename))
+        paths.append(os.path.join(folder, filename))
     return sorted(paths)
-
 
 def blur_image(image):
     return cv2.GaussianBlur(image, ksize=BLUR_KSIZE, sigmaX=0)
 
-
 def build_blue_mask(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     return cv2.inRange(hsv, LOWER_BLUE, UPPER_BLUE)
-
 
 def refine_mask(mask):
     d_kernel = np.ones((DILATION_SIZE, DILATION_SIZE), np.uint8)
@@ -43,13 +38,11 @@ def refine_mask(mask):
     mask = cv2.dilate(mask, d_kernel, iterations=1)
     return mask
 
-
 def find_largest_contour(mask):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not contours:
         return None
     return max(contours, key=cv2.contourArea)
-
 
 def edge_angle(p1, p2):
     dx = p2[0] - p1[0]
@@ -57,11 +50,9 @@ def edge_angle(p1, p2):
     angle = np.degrees(np.arctan2(dy, dx))
     return (angle + 180) % 180
 
-
 def angle_diff(a, b):
     d = abs(a - b)
     return min(d, 180 - d)
-
 
 def merge_collinear_segments(pts, angle_threshold=ANGLE_THRESHOLD):
     pts = np.asarray(pts, dtype=float)
@@ -158,7 +149,6 @@ def reorder_corners_top_right(corners):
     top_right_idx = sort_idx[0]
     return np.roll(corners, -top_right_idx, axis=0)
 
-
 def get_table_corners(hull):
     pts = hull.reshape(-1, 2).astype(float)
     merged_lines = merge_collinear_segments(pts)
@@ -184,7 +174,6 @@ def get_table_corners(hull):
 
     return np.stack(raw_corners, axis=0)
 
-
 def warp_table(image, corners):
     dst_pts = np.array(
         [[OUT_W - 1, 0], [OUT_W - 1, OUT_H - 1], [0, OUT_H - 1], [0, 0]],
@@ -193,7 +182,6 @@ def warp_table(image, corners):
     corners = reorder_corners_top_right(corners)
     matrix = cv2.getPerspectiveTransform(corners, dst_pts)
     return cv2.warpPerspective(image, matrix, (OUT_W, OUT_H))
-
 
 def process_image(image_path, output_path):
     image = cv2.imread(image_path)
@@ -215,7 +203,6 @@ def process_image(image_path, output_path):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     cv2.imwrite(output_path, warped)
     return output_path
-
 
 def main():
     data_folder = os.path.join(os.path.dirname(__file__), "data", "development_set")
