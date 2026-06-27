@@ -1,3 +1,11 @@
 .venv
 .env
 __pycache__
+task3/_yolo8ball
+task3/_detr8ball
+VC_2526_Project.pdf
+datasets
+
+# trained / downloaded model weights (large & regenerable — keep out of git)
+*.pt
+*.bin
