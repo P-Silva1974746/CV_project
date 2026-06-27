@@ -430,6 +430,7 @@ if __name__ == "__main__":
     # test set evaluation
     model = build_regression_model(backbone=args.backbone, pretrained=False)
     model.load_state_dict(torch.load(os.path.join(args.output_dir, "best_model.pth"), map_location=device))
+    model = model.to(device)
     if not args.inference_only:
         mae, mape, mse, all_preds = evaluate_model(model, test_loader, device)
         print(f"Test mae: {mae:.4f}")
