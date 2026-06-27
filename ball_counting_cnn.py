@@ -275,7 +275,7 @@ if __name__ == "__main__":
 
         # dataset and splits, mantaining main_.coco test is in the final test plit
         main_test_meta = [m for m in total_metadata if m['split'] == 'test']
-        trainval_meta  = [m for m in total_metadata if not (m['dataset'] == 'main_.coco' and m['split'] == 'test')]
+        trainval_meta  = [m for m in total_metadata if not (m['split'] == 'test')]
 
 
         print(f"Test set: {len(main_test_meta)} samples")
