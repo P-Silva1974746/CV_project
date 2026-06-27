@@ -7,3 +7,5 @@ yolo*
 
 .env
 __pycache__
+data/dataset_task2
+results
