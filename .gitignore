@@ -5,3 +5,5 @@ flattening.ipynb
 pool*
 yolo*
 
+.env
+__pycache__
