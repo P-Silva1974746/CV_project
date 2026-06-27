@@ -1,3 +1,9 @@
 .venv
+other.ipynb
+flattening.ipynb
+
+pool*
+yolo*
+
 .env
 __pycache__
